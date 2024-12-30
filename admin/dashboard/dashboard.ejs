@@ -714,6 +714,8 @@
           document.getElementById("editDate").value = appointment.date;
           document.getElementById("editMessage").value = appointment.message;
 
+          const form = document.getElementById("editForm");
+          form.dataset.id = appointmentId; // Dynamically set data-id attribute
           // Initialize Flatpickr with the selected date
           flatpickr("#editDate", {
             defaultDate: appointment.date,
@@ -748,7 +750,7 @@
 
           const form = event.target;
           const appointmentId = form.dataset.id;
-
+          console.log("Appointment ID:", appointmentId);
           const formData = {
             name: document.getElementById("editName").value,
             email: document.getElementById("editEmail").value,

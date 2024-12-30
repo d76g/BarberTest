@@ -291,7 +291,7 @@ app.get("/api/fully-booked-dates", async (req, res) => {
       HAVING COUNT(time) >= $1
     `;
 
-    const maxSlotsPerDay = 16; // Adjust as needed
+    const maxSlotsPerDay = 17; // Adjust as needed
     const result = await pool.query(query, [maxSlotsPerDay]);
 
     // Extract the formatted dates

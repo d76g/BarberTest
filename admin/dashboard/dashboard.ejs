@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Luxi Style Barber</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
+  </head>
+  <body class="bg-gray-50 w-full h-screen">
+    <nav class="bg-white border-gray-200">
+      <div
+        class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+      >
+        <a
+          href="/"
+          class="flex items-center space-x-3 rtl:space-x-reverse"
+        >
+          <img
+            src="https://flowbite.com/docs/images/logo.svg"
+            class="h-8"
+            alt="Flowbite Logo"
+          />
+          <span class="self-center text-2xl font-semibold whitespace-nowrap"
+            >Luix Style</span
+          >
+        </a>
+        <button
+          data-collapse-toggle="navbar-default"
+          type="button"
+          class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+          aria-controls="navbar-default"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Open main menu</span>
+          <svg
+            class="w-5 h-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M1 1h15M1 7h15M1 13h15"
+            />
+          </svg>
+        </button>
+        <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+          <ul
+            class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white"
+          >
+            <li>
+              <a
+                href="/admin/dashboard"
+                class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0"
+                aria-current="page"
+                >Home</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="flex flex-col items-center w-3/4 my-10 h-screen mx-auto ">
+        <div class="flex justify-between items-center mb-5 space-x-4 w-3/4">
+            <div>
+              <label for="filterDate" class="block text-sm font-medium text-gray-700">Filter by Date:</label>
+              <input
+                id="filterDate"
+                type="text"
+                placeholder="Select a date"
+                class="w-60 px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label for="filterMonth" class="block text-sm font-medium text-gray-700">Filter by Month:</label>
+              <input
+                id="filterMonth"
+                type="text"
+                class="w-60 px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Select Month"
+                />
+
+            </div>
+            <div>
+                <button
+                  id="resetFilters"
+                  class="text-white bg-gray-500 hover:bg-gray-700 px-4 py-2 rounded-md"
+                >
+                  Reset Filters
+                </button>
+              </div>
+          </div>
+          
+      <div class="flex justify-end w-full mb-3">
+        <button
+          type="button"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        >
+          Afspraak Maken
+        </button>
+      </div>
+      
+      <div class="relative overflow-x-auto w-full">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3">Naam</th>
+              <th scope="col" class="px-6 py-3">Tijd</th>
+            <th scope="col" class="px-6 py-3">Datum</th>
+              <th scope="col" class="px-6 py-3">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% appointments.forEach(appointment => { %>
+            <tr class="bg-white border-b">
+              <th
+                scope="row"
+                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+              >
+                <%= appointment.name %>
+              </th>
+              <td class="px-6 py-4"><%= appointment.time %></td>
+              <td class="px-6 py-4">
+                <%= appointment.date ? appointment.date : 'N/A' %>
+              </td>
+              
+            <td class="px-6 py-4 space-x-2">
+                <button
+                    class="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
+                    onclick="openEditModal('<%= appointment.id %>')"
+                ></button>
+                <button
+                class="fa-solid fa-trash text-red-500 cursor-pointer"
+                onclick="deleteAppointment('<%= appointment.id %>')">
+                </button>
+                          </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <div
+        id="modalBackground"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
+      >
+        <div
+          id="appointmentModal"
+          class="bg-white rounded-lg shadow-lg p-6 w-3/4 md:w-1/2 z-50"
+        >
+          <form
+            id="appointmentForm"
+            class="appoin-form space-y-4"
+            method="POST"
+            action="/admin/dashboard/add-appointment"
+          >
+            <div class="input-wrapper space-y-2">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Your Full Name"
+                required
+                class="input-field w-full px-4 py-2 border rounded-md"
+              />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email Address"
+                required
+                class="input-field w-full px-4 py-2 border rounded-md"
+              />
+            </div>
+            <div class="input-wrapper space-y-2">
+              <input
+                type="text"
+                id="phone"
+                name="phone"
+                placeholder="Phone Number"
+                required
+                class="input-field w-full px-4 py-2 border rounded-md"
+              />
+              <select
+                id="category"
+                name="category"
+                class="input-field w-full px-4 py-2 border rounded-md"
+                required
+              >
+                <option value="Hair Cut">Hair Cut</option>
+                <option value="Hair & Beard">Hair & Beard</option>
+                <option value="Stylish Shaving">Stylish Shaving</option>
+                <option value="Kids Cut">Kids Cut</option>
+                <option value="Hair Color">Hair Color</option>
+              </select>
+            </div>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              required
+              class="input-field w-full px-4 py-2 border rounded-md"
+            />
+            <input
+              type="time"
+              id="time"
+              name="time"
+              required
+              class="input-field w-full px-4 py-2 border rounded-md"
+            />
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Write Message"
+              required
+              class="input-field w-full px-4 py-2 border rounded-md"
+            ></textarea>
+            <div class="flex justify-between items-center">
+              <button
+                type="submit"
+                class="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800"
+              >
+                Appointment Now
+              </button>
+              <button
+                type="button"
+                id="closeModal"
+                class="text-gray-500 px-4 py-2 hover:text-gray-800"
+              >
+                Close
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div
+  id="editModal"
+  class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
+>
+  <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 md:w-1/2 z-50">
+    <form id="editForm" class="space-y-4">
+      <div class="input-wrapper space-y-2">
+        <input
+          type="text"
+          id="editName"
+          name="name"
+          placeholder="Your Full Name"
+          required
+          class="input-field w-full px-4 py-2 border rounded-md"
+        />
+        <input
+          type="email"
+          id="editEmail"
+          name="email"
+          placeholder="Email Address"
+          required
+          class="input-field w-full px-4 py-2 border rounded-md"
+        />
+      </div>
+      <div class="input-wrapper space-y-2">
+        <input
+          type="text"
+          id="editPhone"
+          name="phone"
+          placeholder="Phone Number"
+          required
+          class="input-field w-full px-4 py-2 border rounded-md"
+        />
+        <select
+          id="editCategory"
+          name="category"
+          class="input-field w-full px-4 py-2 border rounded-md"
+          required
+        >
+          <option value="Hair Cut">Hair Cut</option>
+          <option value="Hair & Beard">Hair & Beard</option>
+          <option value="Stylish Shaving">Stylish Shaving</option>
+          <option value="Kids Cut">Kids Cut</option>
+          <option value="Hair Color">Hair Color</option>
+        </select>
+      </div>
+      <input
+        type="date"
+        id="editDate"
+        name="date"
+        required
+        class="input-field w-full px-4 py-2 border rounded-md"
+      />
+      <input
+        type="time"
+        id="editTime"
+        name="time"
+        required
+        class="input-field w-full px-4 py-2 border rounded-md"
+      />
+      <textarea
+        id="editMessage"
+        name="message"
+        placeholder="Write Message"
+        required
+        class="input-field w-full px-4 py-2 border rounded-md"
+      ></textarea>
+      <div class="flex justify-between items-center">
+        <button
+          type="button"
+          class="text-gray-500 px-4 py-2 hover:text-gray-800"
+          onclick="closeEditModal()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        flatpickr('#filterDate', {
+         dateFormat: 'Y-m-d',
+        });
+
+        flatpickr("#filterMonth", {
+        plugins: [
+            new monthSelectPlugin({
+            shorthand: true, // Show short month names (e.g., "Jan", "Feb")
+            dateFormat: "Y-m", // Format returned as "YYYY-MM" for filtering
+            altFormat: "F Y", // Display format as "Month YYYY"
+            theme: "dark" // Use the dark theme
+            })
+        ],
+        onChange: function (selectedDates, dateStr) {
+            filterAppointmentsByMonth(dateStr); // Call your filtering function
+        }
+        });
+
+
+      const modalBackground = document.getElementById("modalBackground");
+      const openModalButton = document.querySelector("button.bg-blue-700");
+      const closeModalButton = document.getElementById("closeModal");
+
+      openModalButton.addEventListener("click", () => {
+        modalBackground.classList.remove("hidden");
+      });
+
+      closeModalButton.addEventListener("click", () => {
+        modalBackground.classList.add("hidden");
+      });
+
+      modalBackground.addEventListener("click", (event) => {
+        if (event.target === modalBackground) {
+          modalBackground.classList.add("hidden");
+        }
+      });
+      async function deleteAppointment(id) {
+        if (!confirm('Are you sure you want to delete this appointment?')) return;
+
+        try {
+            const response = await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
+
+            if (response.ok) {
+            alert('Appointment deleted successfully!');
+            location.reload(); // Refresh the page to update the table
+            } else {
+            alert('Failed to delete appointment.');
+            }
+        } catch (error) {
+            console.error('Error deleting appointment:', error);
+            alert('An error occurred while deleting the appointment.');
+        }
+     }
+     let currentEditId = null;
+
+function openEditModal(id) {
+  currentEditId = id;
+  fetch(`/api/appointments/${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+      document.getElementById('editName').value = data.name;
+      document.getElementById('editEmail').value = data.email;
+      document.getElementById('editPhone').value = data.phone;
+      document.getElementById('editCategory').value = data.category;
+      document.getElementById('editDate').value = data.date;
+      document.getElementById('editTime').value = data.time;
+      document.getElementById('editMessage').value = data.message;
+      document.getElementById('editModal').classList.remove('hidden');
+    })
+    .catch((error) => console.error('Error fetching appointment:', error));
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.add('hidden');
+}
+
+document.getElementById('editForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const updatedData = {
+    name: document.getElementById('editName').value,
+    email: document.getElementById('editEmail').value,
+    phone: document.getElementById('editPhone').value,
+    category: document.getElementById('editCategory').value,
+    date: document.getElementById('editDate').value,
+    time: document.getElementById('editTime').value,
+    message: document.getElementById('editMessage').value,
+  };
+
+  try {
+    const response = await fetch(`/api/appointments/${currentEditId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (response.ok) {
+      alert('Appointment updated successfully!');
+      location.reload(); // Refresh to update the table
+    } else {
+      alert('Failed to update appointment.');
+    }
+  } catch (error) {
+    console.error('Error updating appointment:', error);
+    alert('An error occurred while updating the appointment.');
+  }
+});
+document.getElementById('filterDate').addEventListener('change', function () {
+  const selectedDate = this.value; // Get the selected date in YYYY-MM-DD format
+  filterAppointmentsByDate(selectedDate);
+});
+
+document.getElementById('filterMonth').addEventListener('change', function () {
+  const selectedMonth = this.value; // Get the selected month in YYYY-MM format
+  filterAppointmentsByMonth(selectedMonth);
+});
+document.querySelectorAll('tbody tr').forEach(row => {
+  const appointmentDate = row.querySelector('td:nth-child(3)').textContent;
+  console.log('Date in row:', appointmentDate);
+});
+
+function filterAppointmentsByDate(date) {
+  const rows = document.querySelectorAll('tbody tr'); // Select all rows in the table
+
+  rows.forEach(row => {
+    // Get the date text and trim whitespace
+    const appointmentDate = row.querySelector('td:nth-child(3)').textContent.trim(); // Assuming date is in the 3rd column
+
+    if (appointmentDate === date) {
+      row.style.display = ''; // Show the row
+    } else {
+      row.style.display = 'none'; // Hide the row
+    }
+  });
+}
+// Event listener for resetting filters
+document.getElementById('resetFilters').addEventListener('click', function () {
+  resetFilters();
+});
+
+// Function to reset all filters
+function resetFilters() {
+  const rows = document.querySelectorAll('tbody tr'); // Select all rows in the table
+
+  // Show all rows
+  rows.forEach(row => {
+    row.style.display = '';
+  });
+
+  // Clear input values
+  document.getElementById('filterDate').value = '';
+  document.getElementById('filterMonth').value = '';
+}
+
+function filterAppointmentsByMonth(month) {
+  const rows = document.querySelectorAll('tbody tr'); // Select all rows in the table
+
+  rows.forEach(row => {
+    const appointmentDate = row.querySelector('td:nth-child(3)').textContent.trim(); // Assuming date is in the 3rd column
+    const appointmentMonth = appointmentDate.slice(0, 7); // Extract YYYY-MM from YYYY-MM-DD
+
+    if (appointmentMonth === month) {
+      row.style.display = ''; // Show the row
+    } else {
+      row.style.display = 'none'; // Hide the row
+    }
+  });
+}
+
+
+    </script>
+  </body>
+</html>

@@ -2,17 +2,22 @@ require("dotenv").config(); // For environment variables
 const express = require("express");
 const path = require("path");
 const nodemailer = require("nodemailer");
-const { Pool } = require("pg");
+const pool = require('./db');
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const port = 3000;
-
-app.set('view engine', 'ejs');
-app.set('views', [
-    path.join(__dirname, 'admin/dashboard'),
-    path.join(__dirname, 'admin/login'),
-  ]);
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const authenticateToken = require("./authToken");
+const userRoutes = require("./userRoutes");
+app.set("view engine", "ejs");
+app.set("views", [
+  path.join(__dirname, "admin/dashboard"),
+  path.join(__dirname, "admin/login"),
+]);
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -25,23 +30,6 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
-
-// PostgreSQL Connection
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
-
-pool
-  .connect()
-  .then(() => console.log("PostgreSQL connected"))
-  .catch((err) => {
-    console.error("PostgreSQL connection error:", err);
-    process.exit(1);
-  });
 
 // Create Appointment Table (if it doesn't exist)
 const createTableQuery = `
@@ -57,11 +45,63 @@ const createTableQuery = `
   );
 `;
 
-pool
-  .query(createTableQuery)
-  .then(() => console.log("Appointment table ready"))
-  .catch((err) => console.error("Error creating table:", err));
+// create USer Table
+const createUserTableQuery = `
+  CREATE TABLE IF NOT EXISTS Users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(email)
+  );
+`;
 
+// Create Appointments Table
+async function createAppointmentTable() {
+  try {
+    await pool.query(createTableQuery);
+    console.log("Appointment table created successfully.");
+  } catch (error) {
+    console.error("Error creating Users table:", error);
+  }
+}
+// Create Users Table
+async function createUsersTable() {
+  try {
+    await pool.query(createUserTableQuery);
+    console.log("Users table created successfully.");
+  } catch (error) {
+    console.error("Error creating Users table:", error);
+  }
+}
+
+async function createDefaultUser() {
+  const name = "Admin";
+  const email = "admin@example.com";
+  const password = "password123"; // Change to a secure password
+  const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+
+  const insertUserQuery = `
+      INSERT INTO Users (name, email, password)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (email) DO NOTHING;
+    `;
+
+  try {
+    await pool.query(insertUserQuery, [name, email, hashedPassword]);
+    console.log("Default user created successfully.");
+  } catch (error) {
+    console.error("Error creating default user:", error);
+  }
+}
+async function initialize() {
+  await createUsersTable();
+  await createDefaultUser();
+  await createAppointmentTable();
+}
+initialize();
 // Email Notification Function
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -79,41 +119,61 @@ const validateAppointmentData = (data) => {
   }
   return true;
 };
-async function addAppointment({ name, email, phone, category, date, time, message }) {
-    const insertQuery = `
+async function addAppointment({
+  name,
+  email,
+  phone,
+  category,
+  date,
+  time,
+  message,
+}) {
+  const insertQuery = `
       INSERT INTO Appointments (name, email, phone, category, date, time, message)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *;
     `;
-    const values = [name, email, phone, category, date, time, message];
-    const result = await pool.query(insertQuery, values);
-    return result.rows[0];
-  }
-  
-app.post('/admin/dashboard/add-appointment', async (req, res) => {
-    try {
-      const { name, email, phone, category, date, time, message } = req.body;
-  
-      if (!validateAppointmentData(req.body)) {
-        return res
-          .status(400)
-          .json({ error: 'Invalid or missing input fields.' });
-      }
-  
-      const savedAppointment = await addAppointment({ name, email, phone, category, date, time, message });
-  
-      // Fetch updated appointments
-      const result = await pool.query('SELECT * FROM Appointments ORDER BY date, time');
-      const appointments = result.rows;
-  
-      // Re-render the dashboard with updated appointments
-      res.render('dashboard', { appointments, message: 'Appointment added successfully!' });
-    } catch (error) {
-      console.error('Error adding appointment:', error);
-      res.status(500).send('Error adding appointment.');
+  const values = [name, email, phone, category, date, time, message];
+  const result = await pool.query(insertQuery, values);
+  return result.rows[0];
+}
+
+app.post("/admin/dashboard/add-appointment", async (req, res) => {
+  try {
+    const { name, email, phone, category, date, time, message } = req.body;
+
+    if (!validateAppointmentData(req.body)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing input fields." });
     }
-  });
-  
+
+    const savedAppointment = await addAppointment({
+      name,
+      email,
+      phone,
+      category,
+      date,
+      time,
+      message,
+    });
+
+    // Fetch updated appointments
+    const result = await pool.query(
+      "SELECT * FROM Appointments ORDER BY date, time"
+    );
+    const appointments = result.rows;
+
+    // Re-render the dashboard with updated appointments
+    res.render("dashboard", {
+      appointments,
+      message: "Appointment added successfully!",
+    });
+  } catch (error) {
+    console.error("Error adding appointment:", error);
+    res.status(500).send("Error adding appointment.");
+  }
+});
 
 // Route to handle form submission
 app.post("/book-appointment", async (req, res) => {
@@ -180,7 +240,7 @@ app.post("/book-appointment", async (req, res) => {
       html: userEmailContent,
     });
 
-      res.render('dashboard', { savedAppointment });
+    res.render("dashboard", { savedAppointment });
   } catch (err) {
     console.error("Error saving appointment or sending email:", err);
     res
@@ -189,99 +249,132 @@ app.post("/book-appointment", async (req, res) => {
   }
 });
 
-app.get('/admin/dashboard', async (req, res) => {
-    try {
-        const result = await pool.query(`
-            SELECT id, name, time, TO_CHAR(date, 'YYYY-MM-DD') AS date
+app.get("/admin/dashboard", authenticateToken, async (req, res) => {
+  const userName = req.cookies.userName || 'Guest'; // Get user's name from cookies
+
+  try {
+    const result = await pool.query(`
+            SELECT id, name, time, email, category, phone, message, TO_CHAR(date, 'YYYY-MM-DD') AS date
             FROM Appointments
+            ORDER BY date, time
           `);
-        const appointments = result.rows;
-        
-      // Render the dashboard template with the appointments data
-      res.render('dashboard', { appointments });
-    } catch (error) {
-      console.error('Error fetching appointments:', error);
-      res.status(500).send('Error fetching appointments.');
-    }
-  });
-  
+    const appointments = result.rows;
+
+    // Render the dashboard template with the appointments data
+    res.render("dashboard", { appointments, userName });
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    res.status(500).send("Error fetching appointments.");
+  }
+});
+
 // edit data
-app.get('/api/appointments/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const result = await pool.query('SELECT * FROM Appointments WHERE id = $1', [id]);
-  
-      if (result.rowCount === 0) {
-        return res.status(404).json({ error: 'Appointment not found.' });
-      }
-  
-      res.json(result.rows[0]);
-    } catch (error) {
-      console.error('Error fetching appointment:', error);
-      res.status(500).json({ error: 'Failed to fetch appointment.' });
+app.get("/api/appointments/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      `SELECT id, name, time, email, category, phone, message, TO_CHAR(date, 'YYYY-MM-DD') AS date FROM Appointments WHERE id = $1`,
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Appointment not found." });
     }
-  });
-  
-  app.put('/api/appointments/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { name, email, phone, category, date, time, message } = req.body;
-  
-      const result = await pool.query(
-        'UPDATE Appointments SET name = $1, email = $2, phone = $3, category = $4, date = $5, time = $6, message = $7 WHERE id = $8 RETURNING *',
-        [name, email, phone, category, date, time, message, id]
-      );
-  
-      if (result.rowCount === 0) {
-        return res.status(404).json({ error: 'Appointment not found.' });
-      }
-  
-      res.json(result.rows[0]);
-    } catch (error) {
-      console.error('Error updating appointment:', error);
-      res.status(500).json({ error: 'Failed to update appointment.' });
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error fetching appointment:", error);
+    res.status(500).json({ error: "Failed to fetch appointment." });
+  }
+});
+
+app.put("/api/appointments/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phone, category, date, time, message } = req.body;
+
+    const result = await pool.query(
+      "UPDATE Appointments SET name = $1, email = $2, phone = $3, category = $4, date = $5, time = $6, message = $7 WHERE id = $8 RETURNING *",
+      [name, email, phone, category, date, time, message, id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Appointment not found." });
     }
-  });
-  
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    res.status(500).json({ error: "Failed to update appointment." });
+  }
+});
 
 // delete appointment
-app.delete('/api/appointments/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const result = await pool.query('DELETE FROM Appointments WHERE id = $1', [id]);
-  
-      if (result.rowCount === 0) {
-        return res.status(404).json({ error: 'Appointment not found.' });
-      }
-  
-      res.json({ message: 'Appointment deleted successfully.' });
-    } catch (error) {
-      console.error('Error deleting appointment:', error);
-      res.status(500).json({ error: 'Failed to delete appointment.' });
-    }
-  });
-  
+app.delete("/api/appointments/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query("DELETE FROM Appointments WHERE id = $1", [
+      id,
+    ]);
 
-app.get('/admin/login', (req, res) => {
-    res.render('login', { error: null }); // Render login.ejs in admin/login folder
-  });
-  
-  app.post('/admin/login', (req, res) => {
-    const { email, password } = req.body;
-    if (email === 'admin@example.com' && password === 'adminpass') {
-      return res.redirect('/admin/dashboard');
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Appointment not found." });
     }
-    res.render('login', { error: 'Invalid credentials' });
-  });
-  
-  
 
-// dashboard
-app.get('/admin/dashboard', (req, res) => {
-    // Fetch and pass dynamic data if needed
-    res.render('dashboard', { data: [] }); // Render dashboard.ejs in admin/dashboard folder
-  });
-  
+    res.json({ message: "Appointment deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting appointment:", error);
+    res.status(500).json({ error: "Failed to delete appointment." });
+  }
+});
+
+app.get("/admin/login", (req, res) => {
+  res.render("login", { error: null }); // Render login.ejs in admin/login folder
+});
+
+app.post("/admin/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Fetch user by email
+    const result = await pool.query("SELECT * FROM Users WHERE email = $1", [
+      email,
+    ]);
+    const user = result.rows[0];
+
+    // If user not found or password doesn't match
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res
+        .status(401)
+        .render("login", { error: "Invalid email or password" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, role: user.role }, // Payload
+      process.env.JWT_SECRET, // Secret key
+      { expiresIn: "1h" } // Token expiry
+    );
+
+    // Send the token in cookies
+    res.cookie("token", token, { httpOnly: true, maxAge: 3600000 }); // 1 hour
+    res.cookie('userName', user.name, { maxAge: 3600000 }); // Store user name in cookies for 1 hour
+    res.redirect("/admin/dashboard"); // Redirect to dashboard
+  } catch (error) {
+    console.error("Error during login:", error);
+    res
+      .status(500)
+      .render("login", { error: "An error occurred. Please try again." });
+  }
+});
+
+app.get("/admin/logout", (req, res) => {
+  res.clearCookie("token"); // Clear the token cookie
+  res.redirect("/admin/login"); // Redirect to login page
+});
+
+// users 
+app.use("/admin/users", userRoutes);
 
 // Start server
 app.listen(port, () => {

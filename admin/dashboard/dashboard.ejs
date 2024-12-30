@@ -74,6 +74,20 @@
                 >Home</a
               >
             </li>
+            <li>
+              <a
+                href="/admin/users"
+                class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0"
+                aria-current="page"
+                >Users</a
+              >
+            </li>
+            <li>
+              <div class="flex items-center">
+                <span class="text-gray-700">Welcome, <%= userName %>!</span>
+                <a href="/admin/logout" class="ml-4 text-red-600">Logout</a>
+              </div>
+            </li>
           </ul>
         </div>
       </div>
@@ -131,12 +145,12 @@
           <tbody>
             <% appointments.forEach(appointment => { %>
             <tr class="bg-white border-b">
-              <th
-                scope="row"
-                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-              >
-                <%= appointment.name %>
-              </th>
+              <td
+              class="px-6 py-4 font-medium text-blue-500 cursor-pointer hover:underline"
+              onclick="openDetailsModal('<%= JSON.stringify(appointment) %>')"
+            >
+              <%= appointment.name %>
+            </td>
               <td class="px-6 py-4"><%= appointment.time %></td>
               <td class="px-6 py-4">
                 <%= appointment.date ? appointment.date : 'N/A' %>
@@ -157,6 +171,26 @@
           </tbody>
         </table>
       </div>
+      <div
+      id="detailsModal"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
+    >
+      <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 md:w-1/2 z-50">
+        <h2 class="text-xl font-bold mb-4" id="modalTitle">Appointment Details</h2>
+        <div id="modalContent" class="space-y-2">
+          <!-- Details will be populated here -->
+        </div>
+        <div class="flex justify-end mt-4">
+          <button
+            type="button"
+            onclick="closeDetailsModal()"
+            class="text-gray-500 px-4 py-2 hover:text-gray-800"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
       <div
         id="modalBackground"
         class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
@@ -335,6 +369,8 @@
       </div>
     </form>
   </div>
+
+
 </div>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -510,6 +546,30 @@ function filterAppointmentsByMonth(month) {
   });
 }
 
+function openDetailsModal(appointmentData) {
+  // Parse the JSON string back into an object
+  const appointment = JSON.parse(appointmentData);
+
+  // Populate the modal content
+  const modalContent = document.getElementById('modalContent');
+  modalContent.innerHTML = `
+    <p><strong>Name:</strong> ${appointment.name}</p>
+    <p><strong>Email:</strong> ${appointment.email || 'N/A'}</p>
+    <p><strong>Phone:</strong> ${appointment.phone || 'N/A'}</p>
+    <p><strong>Category:</strong> ${appointment.category || 'N/A'}</p>
+    <p><strong>Date:</strong> ${appointment.date}</p>
+    <p><strong>Time:</strong> ${appointment.time}</p>
+    <p><strong>Message:</strong> ${appointment.message || 'N/A'}</p>
+  `;
+
+  // Show the modal
+  document.getElementById('detailsModal').classList.remove('hidden');
+}
+
+function closeDetailsModal() {
+  // Hide the modal
+  document.getElementById('detailsModal').classList.add('hidden');
+}
 
     </script>
   </body>

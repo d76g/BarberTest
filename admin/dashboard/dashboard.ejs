@@ -12,23 +12,28 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css"
+    />
 
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
   </head>
   <body class="bg-gray-50 w-full h-screen">
     <nav class="bg-white border-gray-200">
       <div
         class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
       >
-        <a
-          href="/"
-          class="flex items-center space-x-3 rtl:space-x-reverse"
-        >
+        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
           <img
             src="https://flowbite.com/docs/images/logo.svg"
             class="h-8"
@@ -92,37 +97,44 @@
         </div>
       </div>
     </nav>
-    <div class="flex flex-col items-center w-3/4 my-10 h-screen mx-auto ">
-        <div class="flex justify-between items-center mb-5 space-x-4 w-3/4">
-            <div>
-              <label for="filterDate" class="block text-sm font-medium text-gray-700">Filter by Date:</label>
-              <input
-                id="filterDate"
-                type="text"
-                placeholder="Select a date"
-                class="w-60 px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label for="filterMonth" class="block text-sm font-medium text-gray-700">Filter by Month:</label>
-              <input
-                id="filterMonth"
-                type="text"
-                class="w-60 px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Select Month"
-                />
+    <div class="flex flex-col items-center w-3/4 my-10 h-screen mx-auto">
+      <div class="flex justify-between items-center mb-5 space-x-4 w-3/4">
+        <div>
+          <label
+            for="filterDate"
+            class="block text-sm font-medium text-gray-700"
+            >Filter by Date:</label
+          >
+          <input
+            id="filterDate"
+            type="text"
+            placeholder="Select a date"
+            class="w-60 px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div>
+          <label
+            for="filterMonth"
+            class="block text-sm font-medium text-gray-700"
+            >Filter by Month:</label
+          >
+          <input
+            id="filterMonth"
+            type="text"
+            class="w-60 px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Select Month"
+          />
+        </div>
+        <div>
+          <button
+            id="resetFilters"
+            class="text-white bg-gray-500 hover:bg-gray-700 px-4 py-2 rounded-md"
+          >
+            Reset Filters
+          </button>
+        </div>
+      </div>
 
-            </div>
-            <div>
-                <button
-                  id="resetFilters"
-                  class="text-white bg-gray-500 hover:bg-gray-700 px-4 py-2 rounded-md"
-                >
-                  Reset Filters
-                </button>
-              </div>
-          </div>
-          
       <div class="flex justify-end w-full mb-3">
         <button
           type="button"
@@ -131,14 +143,14 @@
           Afspraak Maken
         </button>
       </div>
-      
+
       <div class="relative overflow-x-auto w-full">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th scope="col" class="px-6 py-3">Naam</th>
               <th scope="col" class="px-6 py-3">Tijd</th>
-            <th scope="col" class="px-6 py-3">Datum</th>
+              <th scope="col" class="px-6 py-3">Datum</th>
               <th scope="col" class="px-6 py-3">Action</th>
             </tr>
           </thead>
@@ -146,51 +158,53 @@
             <% appointments.forEach(appointment => { %>
             <tr class="bg-white border-b">
               <td
-              class="px-6 py-4 font-medium text-blue-500 cursor-pointer hover:underline"
-              onclick="openDetailsModal('<%= JSON.stringify(appointment) %>')"
-            >
-              <%= appointment.name %>
-            </td>
+                class="px-6 py-4 font-medium text-blue-500 cursor-pointer hover:underline"
+                onclick="openDetailsModal('<%= JSON.stringify(appointment) %>')"
+              >
+                <%= appointment.name %>
+              </td>
               <td class="px-6 py-4"><%= appointment.time %></td>
               <td class="px-6 py-4">
                 <%= appointment.date ? appointment.date : 'N/A' %>
               </td>
-              
-            <td class="px-6 py-4 space-x-2">
+
+              <td class="px-6 py-4 space-x-2">
                 <button
-                    class="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
-                    onclick="openEditModal('<%= appointment.id %>')"
+                  class="fa-solid fa-pen-to-square text-blue-500 cursor-pointer"
+                  onclick="openEditModal('<%= appointment.id %>')"
                 ></button>
                 <button
-                class="fa-solid fa-trash text-red-500 cursor-pointer"
-                onclick="deleteAppointment('<%= appointment.id %>')">
-                </button>
-                          </td>
+                  class="fa-solid fa-trash text-red-500 cursor-pointer"
+                  onclick="deleteAppointment('<%= appointment.id %>')"
+                ></button>
+              </td>
             </tr>
             <% }); %>
           </tbody>
         </table>
       </div>
       <div
-      id="detailsModal"
-      class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
-    >
-      <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 md:w-1/2 z-50">
-        <h2 class="text-xl font-bold mb-4" id="modalTitle">Appointment Details</h2>
-        <div id="modalContent" class="space-y-2">
-          <!-- Details will be populated here -->
-        </div>
-        <div class="flex justify-end mt-4">
-          <button
-            type="button"
-            onclick="closeDetailsModal()"
-            class="text-gray-500 px-4 py-2 hover:text-gray-800"
-          >
-            Close
-          </button>
+        id="detailsModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
+      >
+        <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 md:w-1/2 z-50">
+          <h2 class="text-xl font-bold mb-4" id="modalTitle">
+            Appointment Details
+          </h2>
+          <div id="modalContent" class="space-y-2">
+            <!-- Details will be populated here -->
+          </div>
+          <div class="flex justify-end mt-4">
+            <button
+              type="button"
+              onclick="closeDetailsModal()"
+              class="text-gray-500 px-4 py-2 hover:text-gray-800"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
-    </div>
       <div
         id="modalBackground"
         class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
@@ -245,20 +259,37 @@
                 <option value="Hair Color">Hair Color</option>
               </select>
             </div>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              required
-              class="input-field w-full px-4 py-2 border rounded-md"
-            />
-            <input
-              type="time"
-              id="time"
-              name="time"
-              required
-              class="input-field w-full px-4 py-2 border rounded-md"
-            />
+            <div>
+              <label
+                for="date"
+                class="block mb-2 text-sm font-medium text-gray-700"
+                >Select Date</label
+              >
+              <input
+                type="text"
+                id="date"
+                name="date"
+                class="input-field w-full px-4 py-2 border rounded-md"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                for="time"
+                class="block mb-2 text-sm font-medium text-gray-700"
+                >Select Time</label
+              >
+              <select
+                id="time"
+                name="time"
+                class="input-field w-full px-4 py-2 border rounded-md"
+                required
+              >
+                <option>Select a date first</option>
+              </select>
+            </div>
+
             <textarea
               id="message"
               name="message"
@@ -286,113 +317,138 @@
       </div>
     </div>
     <div
-  id="editModal"
-  class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
->
-  <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 md:w-1/2 z-50">
-    <form id="editForm" class="space-y-4">
-      <div class="input-wrapper space-y-2">
-        <input
-          type="text"
-          id="editName"
-          name="name"
-          placeholder="Your Full Name"
-          required
-          class="input-field w-full px-4 py-2 border rounded-md"
-        />
-        <input
-          type="email"
-          id="editEmail"
-          name="email"
-          placeholder="Email Address"
-          required
-          class="input-field w-full px-4 py-2 border rounded-md"
-        />
-      </div>
-      <div class="input-wrapper space-y-2">
-        <input
-          type="text"
-          id="editPhone"
-          name="phone"
-          placeholder="Phone Number"
-          required
-          class="input-field w-full px-4 py-2 border rounded-md"
-        />
-        <select
-          id="editCategory"
-          name="category"
-          class="input-field w-full px-4 py-2 border rounded-md"
-          required
-        >
-          <option value="Hair Cut">Hair Cut</option>
-          <option value="Hair & Beard">Hair & Beard</option>
-          <option value="Stylish Shaving">Stylish Shaving</option>
-          <option value="Kids Cut">Kids Cut</option>
-          <option value="Hair Color">Hair Color</option>
-        </select>
-      </div>
-      <input
-        type="date"
-        id="editDate"
-        name="date"
-        required
-        class="input-field w-full px-4 py-2 border rounded-md"
-      />
-      <input
-        type="time"
-        id="editTime"
-        name="time"
-        required
-        class="input-field w-full px-4 py-2 border rounded-md"
-      />
-      <textarea
-        id="editMessage"
-        name="message"
-        placeholder="Write Message"
-        required
-        class="input-field w-full px-4 py-2 border rounded-md"
-      ></textarea>
-      <div class="flex justify-between items-center">
-        <button
-          type="button"
-          class="text-gray-500 px-4 py-2 hover:text-gray-800"
-          onclick="closeEditModal()"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          class="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800"
-        >
-          Save Changes
-        </button>
-      </div>
-    </form>
-  </div>
+      id="editModal"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center"
+    >
+      <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 md:w-1/2 z-50">
+        <h2 class="text-xl font-bold mb-4">Edit Appointment</h2>
+        <form id="editForm" data-id="" class="space-y-4">
+          <!-- Name -->
+          <div class="input-wrapper space-y-2">
+            <input
+              type="text"
+              id="editName"
+              name="name"
+              placeholder="Your Full Name"
+              required
+              class="input-field w-full px-4 py-2 border rounded-md"
+            />
+            <input
+              type="email"
+              id="editEmail"
+              name="email"
+              placeholder="Email Address"
+              required
+              class="input-field w-full px-4 py-2 border rounded-md"
+            />
+          </div>
 
+          <!-- Phone and Category -->
+          <div class="input-wrapper space-y-2">
+            <input
+              type="text"
+              id="editPhone"
+              name="phone"
+              placeholder="Phone Number"
+              required
+              class="input-field w-full px-4 py-2 border rounded-md"
+            />
+            <select
+              id="editCategory"
+              name="category"
+              class="input-field w-full px-4 py-2 border rounded-md"
+              required
+            >
+              <option value="Hair Cut">Hair Cut</option>
+              <option value="Hair & Beard">Hair & Beard</option>
+              <option value="Stylish Shaving">Stylish Shaving</option>
+              <option value="Kids Cut">Kids Cut</option>
+              <option value="Hair Color">Hair Color</option>
+            </select>
+          </div>
 
-</div>
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+          <!-- Date -->
+          <div>
+            <label
+              for="editDate"
+              class="block mb-2 text-sm font-medium text-gray-700"
+              >Select Date</label
+            >
+            <input
+              type="date"
+              id="editDate"
+              name="date"
+              class="input-field w-full px-4 py-2 border rounded-md"
+              required
+            />
+          </div>
+
+          <!-- Time -->
+          <div>
+            <label
+              for="editTime"
+              class="block mb-2 text-sm font-medium text-gray-700"
+              >Select Time</label
+            >
+            <select
+              id="editTime"
+              name="time"
+              class="input-field w-full px-4 py-2 border rounded-md"
+              required
+            >
+              <option>Select a date first</option>
+            </select>
+          </div>
+
+          <!-- Message -->
+          <textarea
+            id="editMessage"
+            name="message"
+            placeholder="Write Message"
+            required
+            class="input-field w-full px-4 py-2 border rounded-md"
+          ></textarea>
+
+          <!-- Buttons -->
+          <div class="flex justify-between items-center">
+            <button
+              type="button"
+              class="text-gray-500 px-4 py-2 hover:text-gray-800"
+              onclick="closeEditModal()"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>
-        flatpickr('#filterDate', {
-         dateFormat: 'Y-m-d',
-        });
+      flatpickr("#filterDate", {
+        dateFormat: "Y-m-d",
+      });
 
-        flatpickr("#filterMonth", {
+      flatpickr("#filterMonth", {
         plugins: [
-            new monthSelectPlugin({
+          new monthSelectPlugin({
             shorthand: true, // Show short month names (e.g., "Jan", "Feb")
             dateFormat: "Y-m", // Format returned as "YYYY-MM" for filtering
             altFormat: "F Y", // Display format as "Month YYYY"
-            theme: "dark" // Use the dark theme
-            })
+            theme: "dark", // Use the dark theme
+          }),
         ],
         onChange: function (selectedDates, dateStr) {
-            filterAppointmentsByMonth(dateStr); // Call your filtering function
-        }
-        });
-
+          filterAppointmentsByMonth(dateStr); // Call your filtering function
+        },
+      });
 
       const modalBackground = document.getElementById("modalBackground");
       const openModalButton = document.querySelector("button.bg-blue-700");
@@ -412,165 +468,344 @@
         }
       });
       async function deleteAppointment(id) {
-        if (!confirm('Are you sure you want to delete this appointment?')) return;
+        if (!confirm("Are you sure you want to delete this appointment?"))
+          return;
 
         try {
-            const response = await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
+          const response = await fetch(`/api/appointments/${id}`, {
+            method: "DELETE",
+          });
 
-            if (response.ok) {
-            alert('Appointment deleted successfully!');
+          if (response.ok) {
+            alert("Appointment deleted successfully!");
             location.reload(); // Refresh the page to update the table
-            } else {
-            alert('Failed to delete appointment.');
-            }
+          } else {
+            alert("Failed to delete appointment.");
+          }
         } catch (error) {
-            console.error('Error deleting appointment:', error);
-            alert('An error occurred while deleting the appointment.');
+          console.error("Error deleting appointment:", error);
+          alert("An error occurred while deleting the appointment.");
         }
-     }
-     let currentEditId = null;
+      }
 
-function openEditModal(id) {
-  currentEditId = id;
-  fetch(`/api/appointments/${id}`)
-    .then((response) => response.json())
-    .then((data) => {
-      document.getElementById('editName').value = data.name;
-      document.getElementById('editEmail').value = data.email;
-      document.getElementById('editPhone').value = data.phone;
-      document.getElementById('editCategory').value = data.category;
-      document.getElementById('editDate').value = data.date;
-      document.getElementById('editTime').value = data.time;
-      document.getElementById('editMessage').value = data.message;
-      document.getElementById('editModal').classList.remove('hidden');
-    })
-    .catch((error) => console.error('Error fetching appointment:', error));
-}
+      document
+        .getElementById("filterDate")
+        .addEventListener("change", function () {
+          const selectedDate = this.value; // Get the selected date in YYYY-MM-DD format
+          filterAppointmentsByDate(selectedDate);
+        });
 
-function closeEditModal() {
-  document.getElementById('editModal').classList.add('hidden');
-}
+      document
+        .getElementById("filterMonth")
+        .addEventListener("change", function () {
+          const selectedMonth = this.value; // Get the selected month in YYYY-MM format
+          filterAppointmentsByMonth(selectedMonth);
+        });
+      document.querySelectorAll("tbody tr").forEach((row) => {
+        const appointmentDate =
+          row.querySelector("td:nth-child(3)").textContent;
+        console.log("Date in row:", appointmentDate);
+      });
 
-document.getElementById('editForm').addEventListener('submit', async (event) => {
-  event.preventDefault();
+      function filterAppointmentsByDate(date) {
+        const rows = document.querySelectorAll("tbody tr"); // Select all rows in the table
 
-  const updatedData = {
-    name: document.getElementById('editName').value,
-    email: document.getElementById('editEmail').value,
-    phone: document.getElementById('editPhone').value,
-    category: document.getElementById('editCategory').value,
-    date: document.getElementById('editDate').value,
-    time: document.getElementById('editTime').value,
-    message: document.getElementById('editMessage').value,
-  };
+        rows.forEach((row) => {
+          // Get the date text and trim whitespace
+          const appointmentDate = row
+            .querySelector("td:nth-child(3)")
+            .textContent.trim(); // Assuming date is in the 3rd column
 
-  try {
-    const response = await fetch(`/api/appointments/${currentEditId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedData),
-    });
+          if (appointmentDate === date) {
+            row.style.display = ""; // Show the row
+          } else {
+            row.style.display = "none"; // Hide the row
+          }
+        });
+      }
+      // Event listener for resetting filters
+      document
+        .getElementById("resetFilters")
+        .addEventListener("click", function () {
+          resetFilters();
+        });
 
-    if (response.ok) {
-      alert('Appointment updated successfully!');
-      location.reload(); // Refresh to update the table
-    } else {
-      alert('Failed to update appointment.');
-    }
-  } catch (error) {
-    console.error('Error updating appointment:', error);
-    alert('An error occurred while updating the appointment.');
-  }
-});
-document.getElementById('filterDate').addEventListener('change', function () {
-  const selectedDate = this.value; // Get the selected date in YYYY-MM-DD format
-  filterAppointmentsByDate(selectedDate);
-});
+      // Function to reset all filters
+      function resetFilters() {
+        const rows = document.querySelectorAll("tbody tr"); // Select all rows in the table
 
-document.getElementById('filterMonth').addEventListener('change', function () {
-  const selectedMonth = this.value; // Get the selected month in YYYY-MM format
-  filterAppointmentsByMonth(selectedMonth);
-});
-document.querySelectorAll('tbody tr').forEach(row => {
-  const appointmentDate = row.querySelector('td:nth-child(3)').textContent;
-  console.log('Date in row:', appointmentDate);
-});
+        // Show all rows
+        rows.forEach((row) => {
+          row.style.display = "";
+        });
 
-function filterAppointmentsByDate(date) {
-  const rows = document.querySelectorAll('tbody tr'); // Select all rows in the table
+        // Clear input values
+        document.getElementById("filterDate").value = "";
+        document.getElementById("filterMonth").value = "";
+      }
 
-  rows.forEach(row => {
-    // Get the date text and trim whitespace
-    const appointmentDate = row.querySelector('td:nth-child(3)').textContent.trim(); // Assuming date is in the 3rd column
+      function filterAppointmentsByMonth(month) {
+        const rows = document.querySelectorAll("tbody tr"); // Select all rows in the table
 
-    if (appointmentDate === date) {
-      row.style.display = ''; // Show the row
-    } else {
-      row.style.display = 'none'; // Hide the row
-    }
-  });
-}
-// Event listener for resetting filters
-document.getElementById('resetFilters').addEventListener('click', function () {
-  resetFilters();
-});
+        rows.forEach((row) => {
+          const appointmentDate = row
+            .querySelector("td:nth-child(3)")
+            .textContent.trim(); // Assuming date is in the 3rd column
+          const appointmentMonth = appointmentDate.slice(0, 7); // Extract YYYY-MM from YYYY-MM-DD
 
-// Function to reset all filters
-function resetFilters() {
-  const rows = document.querySelectorAll('tbody tr'); // Select all rows in the table
+          if (appointmentMonth === month) {
+            row.style.display = ""; // Show the row
+          } else {
+            row.style.display = "none"; // Hide the row
+          }
+        });
+      }
 
-  // Show all rows
-  rows.forEach(row => {
-    row.style.display = '';
-  });
+      function openDetailsModal(appointmentData) {
+        // Parse the JSON string back into an object
+        const appointment = JSON.parse(appointmentData);
 
-  // Clear input values
-  document.getElementById('filterDate').value = '';
-  document.getElementById('filterMonth').value = '';
-}
-
-function filterAppointmentsByMonth(month) {
-  const rows = document.querySelectorAll('tbody tr'); // Select all rows in the table
-
-  rows.forEach(row => {
-    const appointmentDate = row.querySelector('td:nth-child(3)').textContent.trim(); // Assuming date is in the 3rd column
-    const appointmentMonth = appointmentDate.slice(0, 7); // Extract YYYY-MM from YYYY-MM-DD
-
-    if (appointmentMonth === month) {
-      row.style.display = ''; // Show the row
-    } else {
-      row.style.display = 'none'; // Hide the row
-    }
-  });
-}
-
-function openDetailsModal(appointmentData) {
-  // Parse the JSON string back into an object
-  const appointment = JSON.parse(appointmentData);
-
-  // Populate the modal content
-  const modalContent = document.getElementById('modalContent');
-  modalContent.innerHTML = `
+        // Populate the modal content
+        const modalContent = document.getElementById("modalContent");
+        modalContent.innerHTML = `
     <p><strong>Name:</strong> ${appointment.name}</p>
-    <p><strong>Email:</strong> ${appointment.email || 'N/A'}</p>
-    <p><strong>Phone:</strong> ${appointment.phone || 'N/A'}</p>
-    <p><strong>Category:</strong> ${appointment.category || 'N/A'}</p>
+    <p><strong>Email:</strong> ${appointment.email || "N/A"}</p>
+    <p><strong>Phone:</strong> ${appointment.phone || "N/A"}</p>
+    <p><strong>Category:</strong> ${appointment.category || "N/A"}</p>
     <p><strong>Date:</strong> ${appointment.date}</p>
     <p><strong>Time:</strong> ${appointment.time}</p>
-    <p><strong>Message:</strong> ${appointment.message || 'N/A'}</p>
+    <p><strong>Message:</strong> ${appointment.message || "N/A"}</p>
   `;
 
-  // Show the modal
-  document.getElementById('detailsModal').classList.remove('hidden');
-}
+        // Show the modal
+        document.getElementById("detailsModal").classList.remove("hidden");
+      }
 
-function closeDetailsModal() {
-  // Hide the modal
-  document.getElementById('detailsModal').classList.add('hidden');
-}
+      function closeDetailsModal() {
+        // Hide the modal
+        document.getElementById("detailsModal").classList.add("hidden");
+      }
+    </script>
+    <script>
+      const dateInput = document.getElementById("date"); // Date picker input
+      const timeDropdown = document.getElementById("time"); // Time dropdown
 
+      dateInput.addEventListener("change", async (event) => {
+        const selectedDate = event.target.value;
+
+        if (!selectedDate) {
+          timeDropdown.innerHTML = "<option>Select a date first</option>";
+          return;
+        }
+
+        try {
+          // Fetch available slots from the backend
+          const response = await fetch(
+            `/api/available-slots?date=${selectedDate}`
+          );
+          const data = await response.json();
+
+          if (data.error) {
+            timeDropdown.innerHTML = `<option>${data.error}</option>`;
+            return;
+          }
+
+          // Populate the dropdown with available slots
+          timeDropdown.innerHTML =
+            data.availableSlots
+              .map(
+                (slot) => `
+        <option value="${slot}">${slot}</option>
+      `
+              )
+              .join("") || "<option>No available slots</option>";
+        } catch (error) {
+          console.error("Error fetching available slots:", error);
+          timeDropdown.innerHTML = "<option>Error fetching slots</option>";
+        }
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const dateInput = document.getElementById("date");
+
+        try {
+          // Fetch fully booked dates from the backend
+          const response = await fetch("/api/fully-booked-dates");
+          const data = await response.json();
+
+          if (data.error) {
+            console.error("Error fetching fully booked dates:", data.error);
+            return;
+          }
+
+          const fullyBookedDates = data.fullyBookedDates;
+
+          // Initialize Flatpickr
+          flatpickr(dateInput, {
+            disable: fullyBookedDates.map((date) => new Date(date)), // Disable fully booked dates
+            minDate: "today", // Prevent past dates
+            maxDate: new Date().fp_incr(30), // Allow booking up to 30 days in advance
+            dateFormat: "Y-m-d", // Match your backend date format
+          });
+        } catch (error) {
+          console.error("Error fetching fully booked dates:", error);
+        }
+      });
+    </script>
+    <script>
+      const editModal = document.getElementById("editModal");
+      const editForm = document.getElementById("editForm");
+      document.addEventListener("DOMContentLoaded", () => {
+        flatpickr("#editDate", {
+          dateFormat: "Y-m-d", // Ensure compatibility with backend
+          minDate: "today", // Prevent selecting past dates
+          onChange: async (selectedDates, dateStr) => {
+            const selectedDate = dateStr; // Get the selected date in YYYY-MM-DD format
+            if (selectedDate) {
+              await populateTimeSlots(selectedDate);
+            }
+          },
+        });
+      });
+      async function populateTimeSlots(date) {
+        const timeDropdown = document.getElementById("editTime");
+        timeDropdown.innerHTML = "<option>Loading...</option>"; // Show a loading message
+
+        try {
+          const response = await fetch(`/api/available-slots?date=${date}`);
+          const data = await response.json();
+
+          if (response.status !== 200 || !data.availableSlots) {
+            timeDropdown.innerHTML = "<option>No available slots</option>";
+            return;
+          }
+
+          // Populate the dropdown with available slots
+          timeDropdown.innerHTML = data.availableSlots
+            .map(
+              (slot) => `
+      <option value="${slot}">${slot}</option>
+    `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error fetching time slots:", error);
+          timeDropdown.innerHTML = "<option>Error loading slots</option>";
+        }
+      }
+
+      async function openEditModal(appointmentId) {
+        try {
+          // Fetch appointment details
+          const response = await fetch(`/api/appointments/${appointmentId}`);
+          const appointment = await response.json();
+
+          if (response.status !== 200) {
+            alert(appointment.error || "Failed to fetch appointment details.");
+            return;
+          }
+
+          // Populate form fields
+          document.getElementById("editName").value = appointment.name;
+          document.getElementById("editEmail").value = appointment.email;
+          document.getElementById("editPhone").value = appointment.phone;
+          document.getElementById("editCategory").value = appointment.category;
+          document.getElementById("editDate").value = appointment.date;
+          document.getElementById("editMessage").value = appointment.message;
+
+          // Initialize Flatpickr with the selected date
+          flatpickr("#editDate", {
+            defaultDate: appointment.date,
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            onChange: async (selectedDates, dateStr) => {
+              await populateTimeSlots(dateStr);
+            },
+          });
+
+          // Populate time slots for the selected date
+          await populateTimeSlots(appointment.date);
+
+          // Show the modal
+          document.getElementById("editModal").classList.remove("hidden");
+        } catch (error) {
+          console.error("Error opening edit modal:", error);
+        }
+      }
+
+      function closeEditModal() {
+        document.getElementById("editModal").classList.add("hidden");
+      }
+
+      function closeEditModal() {
+        editModal.classList.add("hidden");
+      }
+      document
+        .getElementById("editForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const form = event.target;
+          const appointmentId = form.dataset.id;
+
+          const formData = {
+            name: document.getElementById("editName").value,
+            email: document.getElementById("editEmail").value,
+            phone: document.getElementById("editPhone").value,
+            category: document.getElementById("editCategory").value,
+            date: document.getElementById("editDate").value,
+            time: document.getElementById("editTime").value,
+            message: document.getElementById("editMessage").value,
+          };
+
+          try {
+            const response = await fetch(`/api/appointments/${appointmentId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            });
+
+            if (response.status !== 200) {
+              const result = await response.json();
+              alert(result.error || "Failed to update appointment.");
+              return;
+            }
+
+            alert("Appointment updated successfully!");
+            location.reload(); // Reload to update the table
+          } catch (error) {
+            console.error("Error saving changes:", error);
+          }
+        });
+
+      // Handle the form submission
+      editForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(editForm);
+        const id = editForm.dataset.id; // Assuming you set the appointment ID here dynamically
+
+        try {
+          const response = await fetch(`/api/appointments/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(Object.fromEntries(formData.entries())),
+          });
+
+          const result = await response.json();
+
+          if (response.status !== 200) {
+            alert(result.error || "Failed to save changes.");
+            return;
+          }
+
+          alert("Appointment updated successfully!");
+          location.reload(); // Reload to update the table
+        } catch (error) {
+          console.error("Error saving changes:", error);
+        }
+      });
     </script>
   </body>
 </html>
